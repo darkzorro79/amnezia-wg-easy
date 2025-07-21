@@ -41,9 +41,37 @@ exit
 
 And log in again.
 
-### 2. Run AmneziaWG Easy
+### 2. Quick Setup with Docker Compose (Recommended)
 
-To automatically install & run wg-easy, simply run:
+For the easiest setup experience, use the automated configuration script:
+
+```bash
+# Clone or download this repository
+git clone https://github.com/w0rng/amnezia-wg-easy.git
+cd amnezia-wg-easy
+
+# Run the setup script
+./setup-env.sh
+```
+
+The setup script will:
+- ✅ Automatically generate a secure bcrypt password hash
+- ✅ Create a properly configured `.env` file
+- ✅ Handle special characters correctly for docker-compose
+- ✅ Configure AmneziaWG obfuscation parameters
+- ✅ Add `.env` to `.gitignore` for security
+
+After the setup is complete, start the service:
+
+```bash
+docker-compose up -d
+```
+
+> 💡 The setup script will ask for your server IP and admin password, then generate all necessary configuration automatically.
+
+### 3. Manual Docker Run
+
+To manually install & run amnezia-wg-easy without docker-compose, run:
 
 ```
   docker run -d \
@@ -70,11 +98,12 @@ To automatically install & run wg-easy, simply run:
 > 💡 Replace `YOUR_ADMIN_PASSWORD_HASH` with a bcrypt password hash to log in on the Web UI.
 > See [How_to_generate_an_bcrypt_hash.md](./How_to_generate_an_bcrypt_hash.md) for know how generate the hash.
 
-The Web UI will now be available on `http://0.0.0.0:51821`.
+The Web UI will now be available on `http://YOUR_SERVER_IP:51821` (or the port you configured).
 
-The Prometheus metrics will now be available on `http://0.0.0.0:51821/metrics`. Grafana dashboard [21733](https://grafana.com/grafana/dashboards/21733-wireguard/)
+The Prometheus metrics will now be available on `http://YOUR_SERVER_IP:51821/metrics`. Grafana dashboard [21733](https://grafana.com/grafana/dashboards/21733-wireguard/)
 
-> 💡 Your configuration files will be saved in `~/.amnezia-wg-easy`
+> 💡 When using docker-compose, your configuration files will be saved in the `etc_wireguard` volume.
+> When using manual docker run, your configuration files will be saved in `~/.amnezia-wg-easy`
 
 ## Options
 
@@ -123,7 +152,19 @@ These options can be configured by setting environment variables using `-e KEY="
 
 ## Updating
 
-To update to the latest version, simply run:
+### Docker Compose Method
+
+To update to the latest version using docker-compose:
+
+```bash
+docker-compose down
+docker-compose pull
+docker-compose up -d
+```
+
+### Manual Docker Method
+
+To update to the latest version using manual docker commands:
 
 ```bash
 docker stop amnezia-wg-easy
@@ -132,6 +173,31 @@ docker pull ghcr.io/w0rng/amnezia-wg-easy
 ```
 
 And then run the `docker run -d \ ...` command above again.
+
+## Additional Setup Files
+
+This repository includes additional setup files to make configuration easier:
+
+### 🚀 `setup-env.sh`
+An interactive bash script that automatically configures your `.env` file:
+- Generates secure bcrypt password hashes
+- Handles special characters correctly for docker-compose 
+- Configures all AmneziaWG obfuscation parameters
+- Adds security measures (`.env` to `.gitignore`)
+
+### 📖 `SETUP_GUIDE.md`
+Comprehensive guide covering:
+- Quick setup instructions
+- Manual configuration options
+- Security best practices
+- Troubleshooting tips
+
+### 🐳 `docker-compose.yml`
+Production-ready Docker Compose configuration with:
+- Environment variable support
+- Named volumes for data persistence
+- Proper security capabilities
+- Network configuration
 
 ## Thanks
 
