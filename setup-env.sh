@@ -86,8 +86,16 @@ WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS:-10.8.0.x}
 echo
 echo -e "${BLUE}🛡️  AmneziaWG настройки обфускации:${NC}"
 
-read -p "Количество junk пакетов [random]: " JC
-JC=${JC:-random}
+# Функция генерации случайных чисел
+generate_random_jc() { echo $((RANDOM % 10 + 1)); }
+generate_random_size() { echo $((RANDOM % 100 + 50)); }
+generate_random_header() { echo $((RANDOM % 1000000000 + 1000000000)); }
+
+read -p "Количество junk пакетов [auto-generate]: " JC
+if [[ -z "$JC" ]]; then
+    JC=$(generate_random_jc)
+    echo "Сгенерировано: JC=$JC"
+fi
 
 read -p "Минимальный размер junk пакета [50]: " JMIN
 JMIN=${JMIN:-50}
@@ -95,23 +103,41 @@ JMIN=${JMIN:-50}
 read -p "Максимальный размер junk пакета [1000]: " JMAX
 JMAX=${JMAX:-1000}
 
-read -p "Размер junk в init пакете [random]: " S1
-S1=${S1:-random}
+read -p "Размер junk в init пакете [auto-generate]: " S1
+if [[ -z "$S1" ]]; then
+    S1=$(generate_random_size)
+    echo "Сгенерировано: S1=$S1"
+fi
 
-read -p "Размер junk в response пакете [random]: " S2
-S2=${S2:-random}
+read -p "Размер junk в response пакете [auto-generate]: " S2
+if [[ -z "$S2" ]]; then
+    S2=$(generate_random_size)
+    echo "Сгенерировано: S2=$S2"
+fi
 
-read -p "Magic header H1 [random]: " H1
-H1=${H1:-random}
+read -p "Magic header H1 [auto-generate]: " H1
+if [[ -z "$H1" ]]; then
+    H1=$(generate_random_header)
+    echo "Сгенерировано: H1=$H1"
+fi
 
-read -p "Magic header H2 [random]: " H2
-H2=${H2:-random}
+read -p "Magic header H2 [auto-generate]: " H2
+if [[ -z "$H2" ]]; then
+    H2=$(generate_random_header)
+    echo "Сгенерировано: H2=$H2"
+fi
 
-read -p "Magic header H3 [random]: " H3
-H3=${H3:-random}
+read -p "Magic header H3 [auto-generate]: " H3
+if [[ -z "$H3" ]]; then
+    H3=$(generate_random_header)
+    echo "Сгенерировано: H3=$H3"
+fi
 
-read -p "Magic header H4 [random]: " H4
-H4=${H4:-random}
+read -p "Magic header H4 [auto-generate]: " H4
+if [[ -z "$H4" ]]; then
+    H4=$(generate_random_header)
+    echo "Сгенерировано: H4=$H4"
+fi
 
 # Создание .env файла
 echo

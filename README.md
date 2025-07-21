@@ -182,8 +182,15 @@ This repository includes additional setup files to make configuration easier:
 An interactive bash script that automatically configures your `.env` file:
 - Generates secure bcrypt password hashes
 - Handles special characters correctly for docker-compose 
-- Configures all AmneziaWG obfuscation parameters
+- Configures all AmneziaWG obfuscation parameters with proper numeric values
 - Adds security measures (`.env` to `.gitignore`)
+
+### 🔧 `fix-env.sh`
+A repair script for existing `.env` files with configuration issues:
+- Automatically fixes "random" values that cause parsing errors
+- Creates backup before making changes
+- Generates proper numeric values for AmneziaWG parameters
+- Safe to run multiple times
 
 ### 📖 `SETUP_GUIDE.md`
 Comprehensive guide covering:
