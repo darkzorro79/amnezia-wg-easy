@@ -37,6 +37,30 @@ generate_random_jc() { echo $((RANDOM % 10 + 1)); }
 generate_random_size() { echo $((RANDOM % 100 + 50)); }
 generate_random_header() { echo $((RANDOM % 1000000000 + 1000000000)); }
 
+# Проверяем и исправляем WG_DEVICE
+echo -e "${BLUE}🔍 Проверка сетевого интерфейса...${NC}"
+CURRENT_WG_DEVICE=$(grep "^WG_DEVICE=" .env | cut -d'=' -f2)
+AUTO_WG_DEVICE=$(ip route get 8.8.8.8 | awk 'NR==1 {for(i=1;i<=NF;i++) if($i=="dev") print $(i+1)}')
+
+if [[ -z "$AUTO_WG_DEVICE" ]]; then
+    AUTO_WG_DEVICE=$(ip route | grep default | awk '{for(i=1;i<=NF;i++) if($i=="dev") print $(i+1)}' | head -1)
+fi
+
+if [[ -n "$AUTO_WG_DEVICE" && "$CURRENT_WG_DEVICE" != "$AUTO_WG_DEVICE" ]]; then
+    echo -e "${YELLOW}⚠️  Текущий WG_DEVICE: $CURRENT_WG_DEVICE${NC}"
+    echo -e "${GREEN}🔍 Обнаружен активный интерфейс: $AUTO_WG_DEVICE${NC}"
+    echo -e "${BLUE}💡 Доступные сетевые интерфейсы:${NC}"
+    ip -br addr show | grep -E "UP|UNKNOWN" | awk '{print "   " $1 " - " $3}' | head -5
+    
+    read -p "Обновить WG_DEVICE на $AUTO_WG_DEVICE? [y/N]: " UPDATE_DEVICE
+    if [[ "$UPDATE_DEVICE" =~ ^[Yy]$ ]]; then
+        sed -i "s/^WG_DEVICE=.*/WG_DEVICE=$AUTO_WG_DEVICE/" .env
+        echo -e "${GREEN}✅ WG_DEVICE: $CURRENT_WG_DEVICE → $AUTO_WG_DEVICE${NC}"
+    fi
+else
+    echo -e "${GREEN}✅ WG_DEVICE корректен: $CURRENT_WG_DEVICE${NC}"
+fi
+
 # Исправляем каждый параметр
 if grep -q "^JC=random" .env; then
     JC=$(generate_random_jc)

@@ -188,9 +188,18 @@ An interactive bash script that automatically configures your `.env` file:
 ### 🔧 `fix-env.sh`
 A repair script for existing `.env` files with configuration issues:
 - Automatically fixes "random" values that cause parsing errors
+- Auto-detects and updates network interface (`WG_DEVICE`)
 - Creates backup before making changes
 - Generates proper numeric values for AmneziaWG parameters
 - Safe to run multiple times
+
+### 🔍 `check-network.sh`
+Network diagnostics utility for troubleshooting connectivity:
+- Auto-detects the correct network interface for `WG_DEVICE`
+- Shows all active network interfaces with IP addresses
+- Identifies public vs private IP addresses
+- Tests internet connectivity and DNS resolution
+- Validates current `.env` network configuration
 
 ### 📖 `SETUP_GUIDE.md`
 Comprehensive guide covering:
